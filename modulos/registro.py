@@ -110,7 +110,8 @@ class Registro:
 (1) Alterar nome
 (2) Alterar forma de pagamento
 (3) Alterar mensalidade
-(4) Alterar notas''')
+(4) Alterar notas
+(5) Excluir cliente                          ''')
                     
                     print('\nPressione ENTER para voltar')
                     opcao = input('\nEscolha uma opção acima. De 1 a 4: ')
