@@ -74,7 +74,7 @@ def escolher_opcao():
                 print(cabecalho)
                 print('-' * 135)
                 
-                registros = cursor.execute(f'SELECT * FROM "{data_escolhida_global}"').fetchall()
+                registros = cursor.execute(f'SELECT * FROM "{data_escolhida_global}" ORDER BY NOME').fetchall()
                 if registros == []:
                     print(f'{"-":<50} {"-":^18} {" " * 6} {"-":<20} {"-"}')
                 

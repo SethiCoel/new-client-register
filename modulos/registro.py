@@ -58,7 +58,7 @@ class Registro:
             print(cabecalho)
             print('-' * 135)
             
-            registros = cursor.execute(f'SELECT * FROM "{data}"').fetchall()
+            registros = cursor.execute(f'SELECT * FROM "{data}" ORDER BY NOME').fetchall()
             if registros == []:
                 print(f'{"-":<5}    {"-":<50} {"-":^18} {" " * 6} {"-":<20} {"-"}')
             
