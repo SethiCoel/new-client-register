@@ -3,6 +3,15 @@ from time import sleep
 from modulos.registro_anterior import *
 
 
+def funcao_encerrar_externamente(signum, frame):
+    Registro.encerrar_programa()
+
+
+# Registrar a função para ser chamada em caso de sinal de interrupção (Ctrl+C) ou término (fechar a janela)
+signal.signal(signal.SIGINT, funcao_encerrar_externamente)
+signal.signal(signal.SIGTERM, funcao_encerrar_externamente)
+
+
 def exibir_nome_programa():
     Registro.limpar_tela()
     Registro.cor('=' * 30, 'ciano')

@@ -11,6 +11,7 @@ __pycache__/
 *.so
 
 #meu
+.log
 .db
 .ico
 .png

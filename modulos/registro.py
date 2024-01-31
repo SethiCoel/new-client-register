@@ -2,13 +2,30 @@ import sqlite3
 import os
 from time import sleep
 from datetime import date
+from datetime import datetime
 from random import randint
+import logging
+import atexit
+import sys
+import signal
 
+
+
+logging.basicConfig(filename='app.log', level=logging.ERROR)
 
 data = date.today().strftime('%d/%m/%y')
+hora = datetime.now().time().strftime('%H:%M:%S')
 
 conn = sqlite3.connect('DATABASE.db')
 cursor = conn.cursor()
+
+def funcao_encerrar_externamente(signum, frame):
+    Registro.encerrar_programa()
+
+
+# Registrar a função para ser chamada em caso de sinal de interrupção (Ctrl+C) ou término (fechar a janela)
+signal.signal(signal.SIGINT, funcao_encerrar_externamente)
+signal.signal(signal.SIGTERM, funcao_encerrar_externamente)
 
 def gerador_de_codigo():
     while True:
@@ -254,7 +271,9 @@ class Registro:
 
                             except Exception as error:
                                 Registro.cor(f'Entrada inválida. Digite apenas números', 'vermelho')
+                                logging.error(f'{error} | Local:Listando clientes. Alterando mensalidade | Data {data} | Hora {hora}\n')
                                 sleep(1)
+                                
 
                         if opcao == 4:
                             Registro.sub_titulo('Editar Cliente')
@@ -287,12 +306,14 @@ class Registro:
 
                     except Exception as error:
                         Registro.cor(f'Entrada inválida. Digite uma opção de 1 a 4', 'vermelho')
+                        logging.error(f'{error} | Local:Alterando clientes. Menu de opções | Data {data} | Hora {hora}\n')
                         sleep(1)
 
 
             except Exception as error:
                 Registro.sub_titulo('Lista de clientes')
                 Registro.cor(f'O ID não foi encontrado', 'vermelho')
+                logging.error(f'{error} | Local:Listando clientes.  Início selecionando ID | Data {data} | Hora {hora}\n')
                 sleep(1)
 
 
@@ -331,6 +352,8 @@ class Registro:
                 continue
             
             if f_nome_do_cliente == '0':
+                Registro.limpar_tela()
+                Registro.sub_titulo('Registrar novo cliente')
                 print('Cliente não registrado')
                 break
             
@@ -349,10 +372,11 @@ Escolha uma das opções acima. De 1 a 3: '''))
                         Registro.cor('Entrada inválida. Digite uma opção de 1 a 3', 'vermelho')
                         continue
             
-                except ValueError:
+                except Exception as error:
                     Registro.limpar_tela()
                     Registro.sub_titulo('Registrar novo cliente')
                     Registro.cor('Entrada inválida. Digite apenas números', 'vermelho')
+                    logging.error(f'{error} | Local: Registrando novo cliente. opções de forma de pagamento | Data {data} | Hora {hora}\n')
                     continue
                 break
 
@@ -361,10 +385,11 @@ Escolha uma das opções acima. De 1 a 3: '''))
                     mensalidade = float(input('\nValor da mensalidade: R$').replace(',','.'))
                     break
 
-                except ValueError:
+                except Exception as error:
                     Registro.limpar_tela()
                     Registro.sub_titulo('Registrar novo cliente')
                     Registro.cor('Entrada inválida. Digite apenas numeros', 'vermelho')
+                    logging.error(f'{error} | Local:Registrando novo cliente. valor da mensalidade | Data {data} | Hora {hora}\n')
                     continue
 
             notas = str(input('\nAdicione uma nota a este pagamento: ')).capitalize()
@@ -391,41 +416,42 @@ Escolha uma das opções acima. De 1 a 3: '''))
                 return  opcao_escolhida
 
 
-            except ValueError as error:
+            except Exception as error:
                 Registro.limpar_tela()
                 Registro.cor('\nEntrada inválida. Digite apenas números', 'vermelho')
+                logging.error(f'{error} | Local:Menu de opções. inicio | Data {data} | Hora {hora}\n')
                 sleep(1)
                 return 7
-        
+                
 
     def encerrar_programa():
         Registro.limpar_tela()
         print('Encerrando Programa.')
-        sleep(0.4)
+        sleep(0.2)
         Registro.limpar_tela()
 
         print('Encerrando Programa..')
-        sleep(0.4)
+        sleep(0.2)
         Registro.limpar_tela()
 
         print('Encerrando Programa...')
-        sleep(0.4)
+        sleep(0.2)
         Registro.limpar_tela()
 
         Registro.limpar_tela()
         print('Encerrando Programa.')
-        sleep(0.4)
+        sleep(0.2)
         Registro.limpar_tela()
 
         print('Encerrando Programa..')
-        sleep(0.4)
+        sleep(0.2)
         Registro.limpar_tela()
 
         print('Encerrando Programa...')
-        sleep(0.4)
+        sleep(0.2)
         Registro.limpar_tela()
         Registro.cor('Programa Fechado.', 'verde')
-        exit()
+        sys.exit()
     
 
     def cor(texto, cor=''):
@@ -607,6 +633,7 @@ Escolha uma opção acima. 1 ou 2: ''')
                                     Registro.sub_titulo('Alterar Saídas')
                                     Registro.cor('Entrada inválida. Digite apenas números', 'vermelho')
                                     sleep(1)
+                                    logging.error(f'{error} | Local:Fechando caixa. alterando valor | Data {data} | Hora {hora}\n')
                                 
                         if nova_saida == 2:
                             Registro.sub_titulo('Alterar Notas')
@@ -630,6 +657,7 @@ Escolha uma opção acima. 1 ou 2: ''')
                     except Exception as error:
                         Registro.sub_titulo('Alterar Saídas')
                         Registro.cor('Entrada inválida. Digite um opção de 1 e 2', 'vermelho')
+                        logging.error(f'{error} | Local:Fechando caixa. Escolhendo opção | Data {data} | Hora {hora}\n')
                         sleep(1)
 
 
@@ -638,8 +666,7 @@ Escolha uma opção acima. 1 ou 2: ''')
                 Registro.sub_titulo('Alterar Saídas')
                 Registro.cor(f'O ID não foi encontrado', 'vermelho')
                 sleep(1)
-
-
+                logging.error(f'{error} | Local:Fechando caixa. Início | Data {data} | Hora {hora}\n')
 
     def retirar_dinheiro_do_caixa():
         Registro.sub_titulo('Retirar Dinheiro do Caixa')
@@ -729,3 +756,6 @@ Escolha uma opção acima. 1 ou 2: ''')
                 Registro.cor(f'Valor Disponível: R${valor_disponivel[0]:.2f}'.replace('.',','), 'amarelo')
                 print()
                 Registro.cor(f'Entrada inválida. Digite apenas números', 'vermelho')
+                logging.error(f'{error} | Local: Retirando valor do caixa. Inicio | Data {data} | Hora {hora}\n')
+    
+                

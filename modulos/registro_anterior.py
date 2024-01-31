@@ -4,6 +4,15 @@ data_escolhida_global = ''
 
 ciclo_ativo = True
 
+def funcao_encerrar_externamente(signum, frame):
+    Registro.encerrar_programa()
+
+
+# Registrar a função para ser chamada em caso de sinal de interrupção (Ctrl+C) ou término (fechar a janela)
+signal.signal(signal.SIGINT, funcao_encerrar_externamente)
+signal.signal(signal.SIGTERM, funcao_encerrar_externamente)
+
+
 def registro_anterior():
     while True:
 
@@ -46,6 +55,7 @@ def registro_anterior():
         except Exception as error:
             Registro.sub_titulo(f'Registros Anteriores')
             Registro.cor(f'A tabela não foi encontrada | Erro: {error}', 'vermelho')
+            logging.error(f'{error} | Local:Registros anteriores. Início | Data {data} | Hora {hora}\n')
         
         
 
@@ -157,9 +167,10 @@ def escolher_opcao():
             if opcao == 3:
                 registro_anterior()
 
-        except:
+        except Exception as error:
             menu()
             Registro.cor('Entrada inválida. Digite uma opção de 1 a 3', 'vermelho')
+            logging.error(f'{error} | Local:Menu de opções. inicio | Data {data} | Hora {hora}\n')
 
     
 def inicio():
