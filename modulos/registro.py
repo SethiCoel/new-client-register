@@ -37,8 +37,8 @@ def gerador_de_codigo():
 # cursor.execute(f'DROP TABLE "{data}"')
 # cursor.execute(f'DROP TABLE "valor_{data}"')
         
-cursor.execute(f'CREATE TABLE IF NOT EXISTS "{data}" (CODIGO INT PRIMARY KEY, NOME TEXT, FORMA_DE_PAGAMENTO TEXT, MENSALIDADE FLOAT, NOTAS TEXT )')
-cursor.execute(f'CREATE TABLE IF NOT EXISTS "valor_{data}" (CODIGO INT PRIMARY KEY, TOTAL_DINHEIRO FLOAT , TOTAL_RETIRADO FLOAT, OUTRAS_NOTAS )')
+cursor.execute(f'CREATE TABLE IF NOT EXISTS "{data}" (CODIGO INT PRIMARY KEY, NOME TEXT, FORMA_DE_PAGAMENTO TEXT, MENSALIDADE FLOAT, NOTAS TEXT, HORA TEXT )')
+cursor.execute(f'CREATE TABLE IF NOT EXISTS "valor_{data}" (CODIGO INT PRIMARY KEY, TOTAL_DINHEIRO FLOAT , TOTAL_RETIRADO FLOAT, OUTRAS_NOTAS, HORA TEXT )')
 
 cursor.execute(f'INSERT OR IGNORE INTO "valor_{data}" (CODIGO) VALUES ("1")')
 
@@ -55,7 +55,7 @@ class Registro:
         self._mensalidade = mensalidade
         self._notas = notas
         cursor.execute(f'''INSERT INTO "{data}" VALUES ("{gerador_de_codigo()}", "{self._cliente}",
-                        "{self.forma_pagamento}", "{self._mensalidade}", "{self._notas}")''')
+                        "{self.forma_pagamento}", "{self._mensalidade}", "{self._notas}" , "{hora}")''')
         conn.commit()
    
     def __str__(self):
@@ -425,6 +425,7 @@ Escolha uma das opções acima. De 1 a 3: '''))
                 
 
     def encerrar_programa():
+        conn.close()
         Registro.limpar_tela()
         print('Encerrando Programa.')
         sleep(0.2)
@@ -718,6 +719,8 @@ Escolha uma opção acima. 1 ou 2: ''')
                     cursor.execute(f'INSERT INTO "valor_{data}" (CODIGO) VALUES ("{codigos}")')
 
                     cursor.execute(f'UPDATE "valor_{data}" SET TOTAL_RETIRADO = ("{valor_a_ser_retirado}") WHERE CODIGO = "{codigos}"')
+                    
+                    cursor.execute(f'UPDATE "valor_{data}" SET HORA = ("{hora}") WHERE CODIGO = "{codigos}"')
 
                     cursor.execute(f'UPDATE "valor_{data}" SET TOTAL_DINHEIRO = ("{valor_retirado}") WHERE CODIGO = "1" ').fetchone()               
                 

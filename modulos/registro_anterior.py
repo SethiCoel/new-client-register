@@ -27,8 +27,11 @@ def registro_anterior():
 
         print('\n\nPressione ENTER para voltar.')
         
-        escolha_id = input('Digite o ID da data que deseja ver: ')
+        escolha_id = input('''\nDigite o ID da data para ver os detalhes do dia.
+Ou digite um nome para lista-lo: ''')
         
+        
+
         if escolha_id == '':
             global ciclo_ativo
             ciclo_ativo = False
